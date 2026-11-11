@@ -546,17 +546,14 @@ end
 
 -- Send message to tmux target
 local function send_to_tmux_target(message)
-  -- Check shell error and fallback to clipboard if needed
+  -- Check shell error helper
   local function check_shell_error(error_message)
     if vim.v.shell_error == 0 then
       return false
     end
-    print(error_message .. ", copied to clipboard")
+    print(error_message)
     return true
   end
-
-  -- Always copy to clipboard (helpful in case claude code vim mode is not in insert mode)
-  vim.fn.setreg('+', message)
 
   -- Check if we're in a tmux session
   vim.fn.system('tmux display-message -p "#{session_name}" 2>/dev/null')
@@ -565,7 +562,7 @@ local function send_to_tmux_target(message)
   -- Find tmux target
   local target, error_msg = find_tmux_target()
   if not target then
-    print(error_msg .. ", copied to clipboard")
+    print(error_msg)
     return
   end
 
@@ -579,7 +576,7 @@ local function send_to_tmux_target(message)
     vim.fn.delete(temp_file)
     if check_shell_error("failed to send to " .. target) then return end
   else
-    print("failed to create temp file, copied to clipboard")
+    print("failed to create temp file")
     return
   end
 
