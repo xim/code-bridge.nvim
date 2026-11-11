@@ -99,7 +99,8 @@ local function build_context(opts)
         then
           -- If this is the current file and we have a visual selection, include the range
           if relative_name == current_file and opts.range == 2 then
-            table.insert(buffers, '@' .. relative_name .. '#L' .. opts.line1 .. '-' .. opts.line2)
+            local range = opts.line1 == opts.line2 and ('L' .. opts.line1) or ('L' .. opts.line1 .. '-' .. opts.line2)
+            table.insert(buffers, '@' .. relative_name .. '#' .. range)
           else
             table.insert(buffers, '@' .. relative_name)
           end
@@ -113,7 +114,8 @@ local function build_context(opts)
     if relative_file ~= '' then
       if opts.range == 2 then
         -- Visual mode - use the range from command
-        return '@' .. relative_file .. '#L' .. opts.line1 .. '-' .. opts.line2
+        local range = opts.line1 == opts.line2 and ('L' .. opts.line1) or ('L' .. opts.line1 .. '-' .. opts.line2)
+        return '@' .. relative_file .. '#' .. range
       else
         -- Normal mode - just file name, no line number
         return '@' .. relative_file
